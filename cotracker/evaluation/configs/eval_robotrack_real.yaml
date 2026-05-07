@@ -1,0 +1,4 @@
+defaults:
+  - default_config_eval
+exp_dir: ./outputs/robotrack-real
+dataset_name: robotrack-real

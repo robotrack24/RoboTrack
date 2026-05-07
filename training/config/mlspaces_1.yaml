@@ -1,0 +1,84 @@
+
+
+defaults:
+  - model: cotracker3_offline
+  - data: mlspaces_1
+  - optimizer: adamw_onecycle
+  - _self_
+
+exp_name: mlspaces-1-reproduce
+exp_dir: ./experiments/mlspaces-1-reproduce
+seed: 42
+
+training:
+  mode: supervised
+  num_steps: 50000
+  batch_size: 1
+  gradient_accumulation_steps: 2
+  num_workers: 10
+  sequence_len: 60
+  traj_per_sample: 512
+  train_iters: 4
+  gradient_clip_norm: 1.0
+  mixed_precision: true
+  precision: bf16
+  profiler:
+    enabled: false
+    start_step: 2
+    warmup_steps: 1
+    num_steps: 5
+    output_dir: null
+    record_shapes: true
+    with_stack: false
+    with_flops: false
+  train_only_on_visible: false
+  add_huber_loss: true
+  random_seq_len: false
+  query_sampling_method: random
+  offline_model: true
+  sliding_window_len: 60
+  torch_compile: false
+
+model:
+  use_flash_attn: false
+
+distributed:
+  backend: nccl
+  timeout_mins: 30
+  find_unused_parameters: false
+  gradient_as_bucket_view: true
+  bucket_cap_mb: 25
+  broadcast_buffers: true
+
+cuda:
+  cudnn_deterministic: true
+  cudnn_benchmark: false
+  allow_tf32: true
+
+checkpoint:
+  save_dir: ${exp_dir}/checkpoints
+  save_every_n_steps: 5000
+  save_every_n_epoch: 5
+  evaluate_every_n_steps: 5000
+  evaluate_every_n_epoch: 5
+  num_checkpoints: 3
+  resume_from: null
+  restore_ckpt: null
+  validate_at_start: false
+
+logging:
+  use_wandb: false
+  wandb_project: null
+  wandb_entity: null
+  log_every_n_steps: 20
+  log_dir: ${exp_dir}/logs
+
+evaluation:
+  eval_protocol: scaled
+  datasets:
+    - tapvid_davis_first
+  final_datasets:
+    - tapvid_davis_first
+    - tapvid_robotap
+    - tapvid_stacking
+  dataset_root: ./data

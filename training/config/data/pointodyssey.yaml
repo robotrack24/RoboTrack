@@ -1,0 +1,21 @@
+# @package _global_
+
+data:
+  train:
+    _target_: training.data.composed_dataset.ComposedDataset
+    datasets:
+      - _target_: cotracker.datasets.pointodyssey_dataset.PointOdysseyDataset
+        data_root:
+        crop_size: ${model.model_resolution}
+        seq_len: ${training.sequence_len}
+        traj_per_sample: ${training.traj_per_sample}
+        sample_vis_last_frame: false
+        use_augs: true
+        random_seq_len: false
+        random_first_frame: false
+        random_frame_rate: true
+        random_number_traj: false
+        only_first: ${training.query_sampling_method}
+        split: train
+        max_samples: 30000
+    repeat: 4  # Repeat dataset 4x (matching original ConcatDataset pattern)

@@ -1,0 +1,69 @@
+name: robotrack
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.10
+  - pip<24.1
+  - pip
+
+  - pip:
+      # --- PyTorch / Lightning (CRITICAL) ---
+      - torch==2.9.1
+      - torchvision==0.24.1
+      - pytorch-lightning==1.6.0
+      - torchmetrics
+
+      # --- Core scientific stack ---
+      - numpy
+      - scipy
+      - pillow
+      - matplotlib
+      - opencv-python
+      - imageio
+      - imageio-ffmpeg
+      - ffmpeg-python
+      - einops
+      - einshape
+      - tqdm
+      - tabulate
+      - rich
+      - pyyaml
+      - toml
+      - tomli
+      - toolz
+
+      # --- Config / logging / data ---
+      - hydra-core
+      - wandb
+      - huggingface-hub
+
+      # --- JAX / TF ecosystem (for TAPIR / related) ---
+      - jax
+      - jaxlib
+      - flax
+      - optax
+      - dm-haiku
+      - dm-tree
+      - etils
+      - keras
+      - tensorflow
+      - tensorflow-datasets
+      - tensorflow-metadata
+      - tensorboard
+      - tensorstore
+      - treescope
+      - xprof
+
+      # --- Misc utilities ---
+      - mediapy
+      - opt-einsum
+      - optree
+      - protobuf
+      - pyarrow
+      - proto-plus
+      - pyasn1
+      - pyasn1-modules
+      - termcolor
+      - typing-inspection
+      - uv

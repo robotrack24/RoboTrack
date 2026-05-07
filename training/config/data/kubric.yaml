@@ -1,0 +1,25 @@
+# @package _global_
+# Kubric Dataset Configuration
+
+data:
+  train:
+    _target_: training.data.composed_dataset.ComposedDataset
+    datasets:
+      - _target_: cotracker.datasets.kubric_movif_dataset.KubricMovifDataset
+        data_root: ${evaluation.dataset_root}/cotracker3_kubric
+        crop_size: ${model.model_resolution}
+        seq_len: ${training.sequence_len}
+        traj_per_sample: ${training.traj_per_sample}
+        sample_vis_last_frame: true
+        use_augs: true
+        random_seq_len: true
+        random_first_frame: false
+        random_frame_rate: true
+        random_number_traj: false
+        full_frame_dropout_prob: 0.0
+        full_frame_dropout_len: 5
+        full_frame_dropout_mode: average  # average | jump_cut | random
+        only_first: ${training.query_sampling_method}
+        split: train
+        max_samples: null
+    repeat: 4  # Repeat dataset 4x (matching original ConcatDataset pattern)

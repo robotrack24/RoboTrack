@@ -1,0 +1,38 @@
+# @package _global_
+# Kubric + PointOdyssey data mix.
+# Settings (augs, crop anchor, max_samples) match mlspaces_1 data config.
+
+data:
+  train:
+    _target_: training.data.composed_dataset.ComposedDataset
+    datasets:
+      - _target_: cotracker.datasets.kubric_movif_dataset.KubricMovifDataset
+        data_root: ${evaluation.dataset_root}/cotracker3_kubric
+        crop_size: ${model.model_resolution}
+        seq_len: ${training.sequence_len}
+        traj_per_sample: ${training.traj_per_sample}
+        sample_vis_last_frame: false
+        use_augs: true
+        random_seq_len: false
+        random_first_frame: false
+        random_frame_rate: true
+        random_number_traj: false
+        only_first: ${training.query_sampling_method}
+        split: train
+        max_samples: 30000
+        spatial_crop_anchor: centroid
+      - _target_: cotracker.datasets.pointodyssey_dataset.PointOdysseyDataset
+        data_root:
+        crop_size: ${model.model_resolution}
+        seq_len: ${training.sequence_len}
+        traj_per_sample: ${training.traj_per_sample}
+        sample_vis_last_frame: false
+        use_augs: true
+        random_seq_len: false
+        random_first_frame: false
+        random_frame_rate: true
+        random_number_traj: false
+        only_first: ${training.query_sampling_method}
+        split: train
+        max_samples: 30000
+    repeat: 4

@@ -1,0 +1,52 @@
+
+# @package _global_
+# CoTracker Training Configuration
+# Usage: torchrun --nproc_per_node=8 training/launch.py exp_name=my_exp
+defaults:
+  - default
+
+# Training settings
+training:
+  num_steps: 115
+  batch_size: 1
+  gradient_accumulation_steps: 2  # Accumulate gradients over N steps
+  num_workers: 4
+  sequence_len: 24
+  traj_per_sample: 768
+  train_iters: 4
+  gradient_clip_norm: 1.0
+  mixed_precision: true
+  torch_compile: false
+  precision: bf16  # bf16 or fp16
+
+# Checkpointing
+checkpoint:
+  save_dir: ${exp_dir}/checkpoints
+  save_every_n_steps: 20  # save checkpoint every N steps (null to disable)
+  evaluate_every_n_steps: 20  # eval every N steps (null to disable)
+  num_checkpoints: 3  # keep only N most recent checkpoints (null = keep all)
+  resume_from: null  # path to resume checkpoint (full training state)
+  restore_ckpt: null  # path to pretrained weights only (no optimizer)
+  validate_at_start: false
+
+# Logging
+logging:
+  use_wandb: false
+  wandb_project: null
+  wandb_entity: null
+  log_every_n_steps: 10
+  log_dir: ${exp_dir}/logs
+  log_visualizations: true  # log trajectory visualizations to wandb
+
+# Evaluation
+evaluation:
+  eval_protocol: baseline
+  datasets:
+    - tapvid_davis_first
+    # - tapvid_robotap
+    # - tapvid_stacking
+  final_datasets:
+    - tapvid_davis_first
+    - tapvid_robotap
+    - tapvid_stacking
+  dataset_root: ./data

@@ -1,0 +1,16 @@
+# @package _global_
+# AdamW + OneCycleLR Configuration (matching original CoTracker)
+
+optimizer:
+  _target_: torch.optim.AdamW
+  lr: 0.0005
+  weight_decay: 0.0005
+  eps: 1.0e-8
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.OneCycleLR
+  max_lr: ${optimizer.lr}
+  total_steps: ${training.num_steps}
+  pct_start: 0.05
+  cycle_momentum: false
+  anneal_strategy: cos

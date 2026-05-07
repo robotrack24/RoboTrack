@@ -1,0 +1,97 @@
+# CoTracker Training Configuration
+# Usage: torchrun --nproc_per_node=8 training/launch.py exp_name=my_exp
+
+defaults:
+  - _self_
+  - model: cotracker3_offline
+  - data: kubric
+  - optimizer: adamw_onecycle
+
+# Experiment settings
+exp_name: cotracker3_kubric
+exp_dir: ./experiments/${exp_name}
+seed: 42
+
+# Training settings
+training:
+  mode: supervised # supervised, pseudo_label, or dense_tracker
+  num_steps: 50000
+  batch_size: 1  # Per-GPU batch size. Effective = batch_size * num_gpus * grad_accum
+  gradient_accumulation_steps: 1  # Accumulate gradients over N steps
+  num_workers: 10
+  sequence_len: 60
+  traj_per_sample: 512
+  train_iters: 4
+  gradient_clip_norm: 1.0
+  mixed_precision: true
+  precision: bf16  # bf16 or fp16
+  profiler:
+    enabled: false
+    start_step: 2
+    warmup_steps: 1
+    num_steps: 5
+    output_dir: null
+    record_shapes: true
+    with_stack: false
+    with_flops: false
+
+  # Loss settings
+  train_only_on_visible: false
+  add_huber_loss: true
+  random_seq_len: false
+  query_sampling_method: random  # null or "random"
+
+  # Model-specific (overridden by model config)
+  offline_model: true
+  sliding_window_len: 16
+  torch_compile: false
+  
+
+# Distributed settings
+distributed:
+  backend: nccl
+  timeout_mins: 30
+  find_unused_parameters: false
+  gradient_as_bucket_view: true
+  bucket_cap_mb: 25
+  broadcast_buffers: true
+
+# CUDA settings
+cuda:
+  cudnn_deterministic: true
+  cudnn_benchmark: false
+  allow_tf32: true
+
+# Checkpointing
+checkpoint:
+  save_dir: ${exp_dir}/checkpoints
+  save_every_n_steps: 5000  # save checkpoint every N steps (null to disable)
+  save_every_n_epoch: 5 # ignored if save_every_n_steps is set
+  evaluate_every_n_steps: 5000  # eval every N steps (null to disable)
+  evaluate_every_n_epoch: 5 # ignored if evaluate_every_n_steps is set
+  num_checkpoints: 3  # keep only N most recent checkpoints (null = keep all)
+  resume_from: null  # path to resume checkpoint (full training state)
+  restore_ckpt: null  # path to pretrained weights only
+  validate_at_start: false
+
+# Logging 
+logging:
+  use_wandb: false
+  wandb_project: null
+  wandb_entity: null
+  log_every_n_steps: 20
+  log_dir: ${exp_dir}/logs
+
+# Evaluation
+evaluation:
+  eval_protocol: scaled  # "baseline" (Kubric-trained) or "scaled" (real-video-trained)
+  datasets:
+    - robotrack-real
+  final_datasets:
+    - tapvid_davis_first
+    - tapvid_kinetics_first
+    - tapvid_robotap
+    - tapvid_stacking
+    - robotrack-real
+    - robotrack-sim
+  dataset_root: ./data

@@ -1,0 +1,12 @@
+__pycache__/
+build/
+*.egg-info/
+dist/
+*.npy
+*.pth
+*.npz
+*.pt
+*.sh
+outputs/
+experiments/
+wandb/

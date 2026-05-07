@@ -1,0 +1,31 @@
+# @package _global_
+# CoTracker3 Online Model Configuration
+# Processes video in sliding windows (streaming capable, less memory)
+
+model:
+  _target_: cotracker.models.core.cotracker.cotracker3_online.CoTrackerThreeOnline
+  stride: 4
+  corr_radius: 3
+  corr_levels: 4
+  window_len: 16
+  num_virtual_tracks: 64
+  model_resolution: [384, 512]
+  linear_layer_for_vis_conf: true
+  hidden_size: 384
+  space_depth: 3
+  time_depth: 3
+  mlp_ratio: 4.0
+  use_rope: false
+  use_flash_attn: true
+  use_ssm: false
+  ssm_state_dim: 128
+  ssm_conv_dim: 4
+  ssm_expand: 2
+  ssm_headdim: 64
+  ssm_bidirectional: true
+
+# Override training settings for online model
+training:
+  offline_model: false
+  sequence_len: 24
+  sliding_window_len: 16

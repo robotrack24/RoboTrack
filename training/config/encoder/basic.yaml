@@ -1,0 +1,4 @@
+_target_: cotracker.models.core.cotracker.blocks.BasicEncoder
+input_dim: 3
+output_dim: 128
+stride: 4

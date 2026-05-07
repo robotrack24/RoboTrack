@@ -1,0 +1,5 @@
+# Hydra default for standalone eval (`training/eval.py`, `launch_eval.py`).
+# Composes the same stack as training; override with e.g. `model=cotracker3_offline_vggt`.
+
+defaults:
+  - kubric
